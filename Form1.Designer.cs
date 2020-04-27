@@ -37,7 +37,7 @@
             // 
             // convertBtn
             // 
-            this.convertBtn.Location = new System.Drawing.Point(415, 171);
+            this.convertBtn.Location = new System.Drawing.Point(415, 107);
             this.convertBtn.Name = "convertBtn";
             this.convertBtn.Size = new System.Drawing.Size(75, 23);
             this.convertBtn.TabIndex = 0;
@@ -48,11 +48,12 @@
             // messageLbl
             // 
             this.messageLbl.AutoSize = true;
-            this.messageLbl.Location = new System.Drawing.Point(32, 117);
+            this.messageLbl.Location = new System.Drawing.Point(29, 138);
             this.messageLbl.Name = "messageLbl";
             this.messageLbl.Size = new System.Drawing.Size(49, 13);
             this.messageLbl.TabIndex = 1;
             this.messageLbl.Text = "message";
+            this.messageLbl.Click += new System.EventHandler(this.messageLbl_Click);
             // 
             // openFileDialog1
             // 
@@ -82,7 +83,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(502, 219);
+            this.ClientSize = new System.Drawing.Size(502, 372);
             this.Controls.Add(this.browseBtn);
             this.Controls.Add(this.fileNameTB);
             this.Controls.Add(this.messageLbl);
