@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -91,6 +92,7 @@ namespace ItunesToSpotifyForm
                     String artist = getNode(track, "Artist").Value;
                     String album = getNode(track, "Album").Value;
                     ProgressLbl.Text = String.Format("Searching for ({0}/{1} -> Name: {2}  Artist: {3}  Album: {4} ", i + 1, tracksXml.Count, name, artist, album);
+
                     FullTrack spotifyTrack = searchSpotify(name, artist, album);
                     
                     if (spotifyTrack != null)
@@ -138,26 +140,42 @@ namespace ItunesToSpotifyForm
         private FullTrack searchSpotify(String name, String artist, String album)
         {
             FullTrack closestMatch = null;
-            SearchItem items = SpotifyAPI.SearchItems(name + "+" + artist, SearchType.Track, 50);
-            foreach(FullTrack item in items.Tracks.Items)
+            SearchItem items = SpotifyAPI.SearchItems(name + " " + artist, SearchType.Track, 50);
+            try
             {
-                String itunesFormattedArtists = concatArtists(item.Artists).Replace(",", "");
-                String itunesArtists = artist.Replace(",", "").Replace("& ", "");
 
-                if (itunesFormattedArtists.Equals(itunesArtists))
+                foreach(FullTrack item in items.Tracks.Items)
                 {
-                    if (closestMatch == null)
-                    {
-                        closestMatch = item;
-                    }
+                    String itunesFormattedArtists = concatArtists(item.Artists).Replace(",", "");
+                    String itunesArtists = artist.Replace(",", "").Replace("& ", "");
 
-                    if(item.Album.Name.Equals(album))
+                    if (itunesFormattedArtists.Equals(itunesArtists))
                     {
-                        closestMatch = item;
+                        if (closestMatch == null)
+                        {
+                            closestMatch = item;
+                        }
+
+                        if(item.Album.Name.Equals(album))
+                        {
+                            closestMatch = item;
+                        }
                     }
                 }
-            }
 
+            } catch (NullReferenceException e)
+            {
+                if (items.Error.Status == 429)
+                {
+                    Thread.Sleep(1000);
+                    closestMatch = searchSpotify(name, artist, album);
+                } else
+                {
+                    AddTrackToErrorLog(name, artist, album);
+                }
+
+
+            }
             return closestMatch;
         }
 
