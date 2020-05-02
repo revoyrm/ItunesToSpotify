@@ -33,6 +33,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.fileNameTB = new System.Windows.Forms.TextBox();
             this.browseBtn = new System.Windows.Forms.Button();
+            this.ProgressLbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // convertBtn
@@ -48,12 +49,11 @@
             // messageLbl
             // 
             this.messageLbl.AutoSize = true;
-            this.messageLbl.Location = new System.Drawing.Point(29, 138);
+            this.messageLbl.Location = new System.Drawing.Point(27, 158);
             this.messageLbl.Name = "messageLbl";
             this.messageLbl.Size = new System.Drawing.Size(49, 13);
             this.messageLbl.TabIndex = 1;
             this.messageLbl.Text = "message";
-            this.messageLbl.Click += new System.EventHandler(this.messageLbl_Click);
             // 
             // openFileDialog1
             // 
@@ -79,11 +79,21 @@
             this.browseBtn.UseVisualStyleBackColor = true;
             this.browseBtn.Click += new System.EventHandler(this.browseBtn_Click);
             // 
+            // ProgressLbl
+            // 
+            this.ProgressLbl.AutoSize = true;
+            this.ProgressLbl.Location = new System.Drawing.Point(27, 134);
+            this.ProgressLbl.Name = "ProgressLbl";
+            this.ProgressLbl.Size = new System.Drawing.Size(47, 13);
+            this.ProgressLbl.TabIndex = 4;
+            this.ProgressLbl.Text = "progress";
+            // 
             // ItunesToSpotifyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 372);
+            this.Controls.Add(this.ProgressLbl);
             this.Controls.Add(this.browseBtn);
             this.Controls.Add(this.fileNameTB);
             this.Controls.Add(this.messageLbl);
@@ -103,6 +113,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TextBox fileNameTB;
         private System.Windows.Forms.Button browseBtn;
+        private System.Windows.Forms.Label ProgressLbl;
     }
 }
 

@@ -76,7 +76,7 @@ namespace ItunesToSpotifyForm
                 messageLbl.Text = "";
                 XDocument doc = XDocument.Load(fileName); ;
 
-                IEnumerable<XElement> tracksXml = doc.Root.Element("dict").Element("dict").Elements("dict");
+                List<XElement> tracksXml = doc.Root.Element("dict").Element("dict").Elements("dict").ToList(); ;
 
                 /* if (tracksXml. == 0)
                  {
@@ -84,12 +84,13 @@ namespace ItunesToSpotifyForm
                  }*/
 
                 List<FullTrack> spotifyTracks = new List<FullTrack>();
-                foreach (XElement track in tracksXml)
+                for (int i = 0; i < tracksXml.Count; i++)
                 {
+                    XElement track = tracksXml[i];
                     String name = getNode(track, "Name").Value;
                     String artist = getNode(track, "Artist").Value;
                     String album = getNode(track, "Album").Value;
-                     //   messageLbl.Text += String.Format("\nItunes:Name: {0}  Artist: {1}  Album: {2} ", name, artist, album);
+                    ProgressLbl.Text = String.Format("Searching for ({0}/{1} -> Name: {2}  Artist: {3}  Album: {4} ", i + 1, tracksXml.Count, name, artist, album);
                     FullTrack spotifyTrack = searchSpotify(name, artist, album);
                     
                     if (spotifyTrack != null)
@@ -179,7 +180,8 @@ namespace ItunesToSpotifyForm
 
         private XElement getNode(XElement track, String key)
         {
-            return (XElement)track.Descendants("key").Where(x => (string)x.Value == key).FirstOrDefault().NextNode;
+            XElement node = track.Descendants("key").Where(x => (string)x.Value == key).FirstOrDefault();
+            return node != null ? (XElement)node.NextNode : new XElement("string", "");
         }
 
         private void browseBtn_Click(object sender, EventArgs e)
@@ -193,6 +195,11 @@ namespace ItunesToSpotifyForm
         }
 
         private void messageLbl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
