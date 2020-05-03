@@ -14,6 +14,6 @@ Takes an Itunes playlist xml file and finds every track in Spotify and adds them
 1. Get your Client Id and Client Secret from your spotify developer page. https://developer.spotify.com/
 2. Run the exe
 3. Fill out the Client Id and Client Secret fields
-4. Click Connect
+4. Click Connect (This will open a browser with the spotify sign in page - You need to sign in for it to create playlists in your accont)
 5. Browse for the exported playlist
 6. Click Convert
