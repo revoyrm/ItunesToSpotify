@@ -29,33 +29,48 @@ namespace ItunesToSpotifyForm
 
         private void Form1_Load(object senderForm, EventArgs e)
         {
+
+        }
+        private void loadConfigBtn_Click(object sender, EventArgs e)
+        {
             XmlDocument doc = new XmlDocument();
             doc.Load(@"C:\dev\spotifyConfig\config.xml");
-            String clientId = doc.SelectNodes("//spotifyConfig/clientId")[0].InnerText;
-            String clientSecret = doc.SelectNodes("//spotifyConfig/clientSecret")[0].InnerText;
+            clientIdTB.Text = doc.SelectNodes("//spotifyConfig/clientId")[0].InnerText;
+            clientSecretTB.Text = doc.SelectNodes("//spotifyConfig/clientSecret")[0].InnerText;
+        }
 
-            AuthorizationCodeAuth auth = new AuthorizationCodeAuth(
-              clientId,
-              clientSecret,
-              "http://localhost:4002",
-              "http://localhost:4002",
-              Scope.PlaylistModifyPrivate | Scope.PlaylistModifyPublic | Scope.UserLibraryModify
-            );
+        private void connectBtn_Click(object sender2, EventArgs e)
+        {
+            String clientId = clientIdTB.Text;
+            String clientSecret = clientSecretTB.Text;
 
-            auth.AuthReceived += async (sender, payload) =>
+            if (clientId.Length > 0 && clientSecret.Length > 0)
             {
-                auth.Stop();
-                Token token = await auth.ExchangeCode(payload.Code);
-                SpotifyAPI = new SpotifyWebAPI()
+                AuthorizationCodeAuth auth = new AuthorizationCodeAuth(
+                  clientId,
+                  clientSecret,
+                  "http://localhost:4002",
+                  "http://localhost:4002",
+                  Scope.PlaylistModifyPrivate | Scope.PlaylistModifyPublic | Scope.UserLibraryModify
+                );
+
+                auth.AuthReceived += async (sender, payload) =>
                 {
-                    TokenType = token.TokenType,
-                    AccessToken = token.AccessToken
+                    auth.Stop();
+                    Token token = await auth.ExchangeCode(payload.Code);
+                    SpotifyAPI = new SpotifyWebAPI()
+                    {
+                        TokenType = token.TokenType,
+                        AccessToken = token.AccessToken
+                    };
+
                 };
-
-            };
-            auth.Start(); // Starts an internal HTTP Server
-            auth.OpenBrowser();
-
+                auth.Start(); // Starts an internal HTTP Server
+                auth.OpenBrowser();
+            } else
+            {
+                messageLbl.Text = "Need both client secret and client Id. These can be found on your spotify developer page (free to create account).";
+            }
         }
 
         private void convertBtn_Click(object sender, EventArgs e)
@@ -65,7 +80,7 @@ namespace ItunesToSpotifyForm
                 createSpotifyPlaylists();
             } else
             {
-                messageLbl.Text = "Not Ready... Not Ready.. Stop That!";
+                messageLbl.Text = "Not Ready... Not Ready.. Stop That! Did you connect to Spotify?";
             }
         }
 
@@ -73,16 +88,11 @@ namespace ItunesToSpotifyForm
         {
             String fileName = fileNameTB.Text;
             if (fileName != null && fileName.Length > 0)
-            { //todo xml check...
+            {
                 messageLbl.Text = "";
                 XDocument doc = XDocument.Load(fileName); ;
 
                 List<XElement> tracksXml = doc.Root.Element("dict").Element("dict").Elements("dict").ToList(); ;
-
-                /* if (tracksXml. == 0)
-                 {
-                     messageLbl.Text += "Did not find any tracks";
-                 }*/
 
                 List<FullTrack> spotifyTracks = new List<FullTrack>();
                 for (int i = 0; i < tracksXml.Count; i++)
@@ -98,11 +108,9 @@ namespace ItunesToSpotifyForm
                     if (spotifyTrack != null)
                     {
                         spotifyTracks.Add(spotifyTrack);
-                      //  messageLbl.Text += String.Format("\nFound: Name: {0} Artist: {1} Album: {2}\n", closestMatch.Name, concatArtists(closestMatch.Artists), closestMatch.Album.Name);
                     }
                     else
                     {
-                     //   messageLbl.Text += "\nNOT FOUND\n";
                         AddTrackToErrorLog(name, artist, album);
                     }
                 }
@@ -210,16 +218,6 @@ namespace ItunesToSpotifyForm
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             fileNameTB.Text = openFileDialog1.FileName;
-        }
-
-        private void messageLbl_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
